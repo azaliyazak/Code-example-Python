@@ -1,0 +1,48 @@
+inFile = open('input.txt', 'r', encoding='utf-8')
+customsSet = {}
+namesList = []
+nv = tuple()
+totalvotes = 0
+sum = flag = 0
+for line in inFile:
+    info = line.split()
+    name = ''
+    for elem in info[:len(info) - 1]:
+        name += elem
+        name += ' '
+    votes = int(info[len(info) - 1])
+    realPlace = 0
+    remainder = 0
+    nv = [name, votes, realPlace, remainder]
+    namesList.append(nv)
+    totalvotes += votes
+coef = totalvotes / 450
+for i in range(len(namesList)):
+    namesList[i][2] = int(namesList[i][1] / coef)
+    sum += int(namesList[i][2])
+    namesList[i][3] = (namesList[i][1] / coef) - int(namesList[i][1] / coef)
+if sum == 450:
+    for i in range(len(namesList)):
+        print(namesList[i][0], namesList[i][2], sep='')
+else:
+    restVotes = 450 - sum
+    namesListSorted = sorted(namesList, key=lambda x: x[3], reverse=True)
+    for i in range(len(namesListSorted) - 2):
+        if namesListSorted[i][3] == namesListSorted[i + 1][3]:
+            flag = 1
+            if namesListSorted[i][3] == max(namesListSorted[i][3],
+                                            namesListSorted[i + 1][3]):
+                namesList[i][1] += 1
+                restVotes += -1
+            else:
+                namesList[i + 1][1] += 1
+                restVotes += -1
+    if flag == 0:
+        i = 0
+        while restVotes != 0:
+            namesListSorted[i][2] += 1
+            restVotes += -1
+            i += 1
+    for i in range(len(namesList)):
+        print(namesList[i][0], namesList[i][2], sep='')
+
